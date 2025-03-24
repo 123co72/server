@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Generator</title>
+    <style>
+        /* Google Font */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right, #0080ff, #333333);
+            color: white;
+            text-align: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: #ff6600;
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #cc5500;
+            transform: scale(1.05);
+        }
+
+        #response {
+            margin-top: 15px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        #downloadLink {
+            display: none;
+            margin-top: 15px;
+            font-size: 16px;
+        }
+
+        #downloadLink a {
+            color: yellow;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        #downloadLink a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Generate a File</h1>
+        <button onclick="generateFile()">Generate File</button>
+        <p id="response"></p>
+        <p id="downloadLink"></p>
+    </div>
+
+    <script>
+        function generateFile() {
+            fetch('generate.php?generate=true')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('response').innerText = data.message;
+                    if (data.success) {
+                        document.getElementById('downloadLink').innerHTML = 
+                            `<a href="${data.file}" download>⬇ Download File</a>`;
+                        document.getElementById('downloadLink').style.display = "block";
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('response').innerText = "Error: " + error;
+                });
+        }
+    </script>
+
+</body>
+</html>
