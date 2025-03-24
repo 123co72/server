@@ -1,30 +1,31 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
+const uuid = require("uuid");
+const temp = require("temp").track();
 
 const app = express();
 const PORT = 3000;
 
 app.get("/generate", (req, res) => {
     const fileContent = "This is a generated file!";
-    const fileName = "generated.txt";
-    const filePath = path.join(__dirname, fileName);
+    const fileName = `generated-${uuid.v4()}.txt`;
 
-    fs.writeFile(filePath, fileContent, (err) => {
+    temp.open(fileName, (err, info) => {
         if (err) {
             return res.status(500).json({ success: false, message: "Error generating file." });
         }
 
-        res.download(filePath, fileName, (downloadErr) => {
-            fs.unlink(filePath, (unlinkErr) => {
-                if (unlinkErr) {
-                    console.error("Error deleting file:", unlinkErr);
+        fs.write(info.fd, fileContent, (writeErr) => {
+            if (writeErr) {
+                return res.status(500).json({ success: false, message: "Error writing to file." });
+            }
+
+            res.download(info.path, fileName, (downloadErr) => {
+                if (downloadErr) {
+                    console.error("Error during download:", downloadErr);
                 }
             });
-
-            if (downloadErr) {
-                console.error("Error during download:", downloadErr);
-            }
         });
     });
 });
