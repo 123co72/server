@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f4f4f4;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #0080ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #005bb5;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Generate and Download File</h2>
+    <button onclick="generateAndDownloadFile()">Download File</button>
+
+    <script>
+        function generateAndDownloadFile() {
+            const fileContent = "This is a generated file!";
+            const fileName = "generated.txt";
+
+            // Create a Blob with the file content
+            const blob = new Blob([fileContent], { type: "text/plain" });
+
+            // Create a temporary anchor element
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = fileName;
+
+            // Append the anchor to the body and trigger the download
+            document.body.appendChild(a);
+            a.click();
+
+            // Clean up: Remove the anchor and revoke the object URL
+            document.body.removeChild(a);
+            URL.revokeObjectURL(a.href);
+        }
+    </script>
+
+</body>
+</html>
